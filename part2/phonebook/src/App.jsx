@@ -39,13 +39,18 @@ const App = () => {
         name: newName,
         number: newNumber
       }
-      const newPersons = persons.concat(personObject)
-      setPersons(newPersons)
-      setNewName('')
-      setNewNumber('')
-      // Update the list of displayed people to take into account the recently added person
-      const filteredPeople = newPersons.filter(person => person.name.toLowerCase().includes(filterText)) // Note that if the filterText is the empty string then the filterPeople array will basically be the same as the persons state array.
-      setDisplayedPeople(filteredPeople)
+      axios
+        .post('http://localhost:3001/persons', personObject)
+        .then(response => {
+          console.log(response)
+          const newPersons = persons.concat(response.data)
+          setPersons(newPersons)
+          setNewName('')
+          setNewNumber('')
+          // Update the list of displayed people to take into account the recently added person
+          const filteredPeople = newPersons.filter(person => person.name.toLowerCase().includes(filterText)) // Note that if the filterText is the empty string then the filterPeople array will basically be the same as the persons state array.
+          setDisplayedPeople(filteredPeople)
+        })
     }
   }
 
