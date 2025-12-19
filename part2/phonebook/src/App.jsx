@@ -68,6 +68,22 @@ const App = () => {
     setDisplayedPeople(filteredPeople)
   }
 
+  const removePerson = (person) => {
+    if (window.confirm(`Delete ${person.name}?`)) {
+          personService
+            .remove(person)
+            .then(response => {
+              console.log('This is returned by axios.delete: ', response)
+              let deletedPersonId = response.data.id
+              let updatedPersons = persons.filter(person => person.id !== deletedPersonId)
+              setPersons(updatedPersons)
+              // Update the list of displayed people to take into account the recently removed person.
+              let updatedDisplayedPeople = displayedPeople.filter(person => person.id !== deletedPersonId)
+              setDisplayedPeople(updatedDisplayedPeople)
+            })
+    }
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -81,7 +97,10 @@ const App = () => {
         handleNumberChange={handleNumberChange}
       />
       <h3>Numbers</h3>
-      <Persons displayedPeople={displayedPeople} />
+      <Persons 
+        displayedPeople={displayedPeople}
+        removePerson={removePerson}
+      />
     </div>
   )
 }
