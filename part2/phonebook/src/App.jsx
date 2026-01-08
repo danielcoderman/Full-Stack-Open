@@ -34,7 +34,26 @@ const App = () => {
 
     // Check if the name in the name input text-box already exists in the phonebook
     if (persons.find(person => person.name === newName)) {
-      window.alert(`${newName} is already added to phonebook`)
+      // Ask the user if they want to update the number of the existing person
+      const isNumberUpdateConfirmed = window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)
+      if (isNumberUpdateConfirmed) {
+        // Update the number of the existing user
+        const personToUpdate = persons.find(person => person.name === newName)
+        const updatedPerson = { ...personToUpdate, number: newNumber }
+
+        personService
+          .update(personToUpdate.id, updatedPerson)
+          .then((response) => {
+            console.log(response)
+            const returnedPerson = response.data
+            setPersons(persons.map(person => person.id === personToUpdate.id ? returnedPerson : person))
+            // Make sure the filtered people is up-to-date, just in case the updated person shows up in the filtered list
+            setDisplayedPeople(displayedPeople.map(person => person.id === personToUpdate.id ? returnedPerson : person))
+            // Reset the form fields
+            setNewName('')
+            setNewNumber('')
+          })
+      }
     } else {
       const personObject = {
         name: newName,
