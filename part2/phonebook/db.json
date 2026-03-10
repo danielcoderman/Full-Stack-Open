@@ -13,12 +13,12 @@
     {
       "id": "5c00",
       "name": "Steph Curry",
-      "number": "831-333-3133"
+      "number": "831-388-2838"
     },
     {
       "id": "b0e9",
       "name": "Draymond Green",
-      "number": "999-222-2222"
+      "number": "831-237-3874"
     },
     {
       "id": "446f",
@@ -29,6 +29,16 @@
       "id": "bb60",
       "name": "Curious George",
       "number": "111-111-1111"
+    },
+    {
+      "id": "a8b8",
+      "name": "Gui Santos",
+      "number": "415-388-3883"
+    },
+    {
+      "id": "b04f",
+      "name": "Taylor Jenkins",
+      "number": "838-383-3838"
     }
   ]
 }

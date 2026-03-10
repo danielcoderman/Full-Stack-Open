@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
+import Notification from './components/Notification'
 
 import personService from './services/persons'
 
@@ -12,6 +13,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filterText, setFilterText] = useState('')
   const [displayedPeople, setDisplayedPeople] = useState([])
+  const [notificationMessage, setNotificationMessage] = useState(null)
 
   useEffect(() => {
     console.log('Effect running')
@@ -52,6 +54,10 @@ const App = () => {
             // Reset the form fields
             setNewName('')
             setNewNumber('')
+            setNotificationMessage(`${returnedPerson.name}'s number has been changed to ${returnedPerson.number}`)
+            setTimeout(() => {
+              setNotificationMessage(null)
+            }, 5000)
           })
       }
     } else {
@@ -70,6 +76,10 @@ const App = () => {
           // Update the list of displayed people to take into account the recently added person
           const filteredPeople = newPersons.filter(person => person.name.toLowerCase().includes(filterText)) // Note that if the filterText is the empty string then the filterPeople array will basically be the same as the persons state array.
           setDisplayedPeople(filteredPeople)
+          setNotificationMessage(`Added ${response.data.name}`)
+          setTimeout(() => {
+            setNotificationMessage(null)
+          }, 5000)
         })
     }
   }
@@ -106,6 +116,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notificationMessage} />
       <Filter filterText={filterText} handleFilterTextChange={handleFilterTextChange} />
       <h3>Add a new</h3>
       <PersonForm 
