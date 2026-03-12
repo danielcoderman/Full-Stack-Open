@@ -14,6 +14,7 @@ const App = () => {
   const [filterText, setFilterText] = useState('')
   const [displayedPeople, setDisplayedPeople] = useState([])
   const [notificationMessage, setNotificationMessage] = useState(null)
+  const [isSuccessNotification, setIsSuccessNotification] = useState(null)
 
   useEffect(() => {
     console.log('Effect running')
@@ -54,10 +55,26 @@ const App = () => {
             // Reset the form fields
             setNewName('')
             setNewNumber('')
+
             setNotificationMessage(`${returnedPerson.name}'s number has been changed to ${returnedPerson.number}`)
+            setIsSuccessNotification(true)
             setTimeout(() => {
               setNotificationMessage(null)
             }, 5000)
+          })
+          .catch(error => {
+            setNotificationMessage(`Information of ${personToUpdate.name} has already been removed from server`)
+            setIsSuccessNotification(false)
+            // Set the notification message to null after 5 seconds
+            setTimeout(() => {
+              setNotificationMessage(null)
+            }, 5000)
+            // Update the list of people
+            setPersons(persons.filter(p => p.id !== personToUpdate.id))
+            setDisplayedPeople(displayedPeople.filter(p => p.id !== personToUpdate.id))
+            // Clear the input fields for adding a person (name and number)
+            setNewName('')
+            setNewNumber('')
           })
       }
     } else {
@@ -77,6 +94,7 @@ const App = () => {
           const filteredPeople = newPersons.filter(person => person.name.toLowerCase().includes(filterText)) // Note that if the filterText is the empty string then the filterPeople array will basically be the same as the persons state array.
           setDisplayedPeople(filteredPeople)
           setNotificationMessage(`Added ${response.data.name}`)
+          setIsSuccessNotification(true)
           setTimeout(() => {
             setNotificationMessage(null)
           }, 5000)
@@ -116,7 +134,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={notificationMessage} />
+      <Notification message={notificationMessage} isSuccess={isSuccessNotification} />
       <Filter filterText={filterText} handleFilterTextChange={handleFilterTextChange} />
       <h3>Add a new</h3>
       <PersonForm 
