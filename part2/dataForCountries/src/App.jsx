@@ -25,6 +25,23 @@ const App = () => {
       })
   }, [])
 
+  const showCountryDataView = (country) => {
+    restCountriesService
+      .get(country)
+      .then(data => {
+        const relevantCountryData = {
+          name: country,
+          capital: data.capital[0],
+          area: data.area,
+          flag: data.flags.png,
+          languages: Object.values(data.languages)
+        }
+        setCountryDataToDisplay(relevantCountryData)
+        setCountriesToDisplay([])
+        setNotificationMessage(null)
+      })
+  }
+
   const handleQueryChange = (event) => {
     console.log(event.target)
     const latestQuery = event.target.value
@@ -46,20 +63,7 @@ const App = () => {
     } else if (matchingCountries.length === 1) {
       // There is only one country matching the query
       console.log(`The only matching country: ${matchingCountries[0]}`)
-      restCountriesService
-        .get(matchingCountries[0])
-        .then(data => {
-          const relevantCountryData = {
-            name: matchingCountries[0],
-            capital: data.capital[0],
-            area: data.area,
-            flag: data.flags.png,
-            languages: Object.values(data.languages)
-          }
-          setCountryDataToDisplay(relevantCountryData)
-          setCountriesToDisplay([])
-          setNotificationMessage(null)
-        })
+      showCountryDataView(matchingCountries[0])
     } else {
       // No matching countries found
       console.log('No matching countries')
@@ -73,7 +77,7 @@ const App = () => {
     <div>
       <CountrySearchForm query={query} handleQueryChange={handleQueryChange} />
       {notificationMessage ? <Notification message={notificationMessage} /> : null}
-      {countriesToDisplay ? <CountriesList countries={countriesToDisplay} /> : null}
+      {countriesToDisplay ? <CountriesList countries={countriesToDisplay} showCountryDataView={showCountryDataView} /> : null}
       {countryDataToDisplay ? <CountryPage data={countryDataToDisplay} /> : null}
     </div>
   )
