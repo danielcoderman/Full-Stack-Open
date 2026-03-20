@@ -11,6 +11,10 @@ const CountryPage = ({ data }) => {
         )}
       </ul>
       <img src={data.flag} />
+      <h2>Weather in {data.capital}</h2>
+      <div>Temperature {data.temperature} Fahrenheit</div>
+      <img src={data.temp_icon} />
+      <div>Wind {data.wind_speed} mph</div>
     </div>
   )
 }

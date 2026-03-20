@@ -6,6 +6,7 @@ import Notification from './components/Notification'
 import CountryPage from './components/CountryPage'
 
 import restCountriesService from './services/restcountries'
+import openWeatherService from './services/openWeather'
 
 const App = () => {
 
@@ -25,20 +26,30 @@ const App = () => {
       })
   }, [])
 
+  // Note: In order to fetch the country data we use the country name. Then
+  // once we receive the country data we have access to the name of the country's capital.
+  // Therefore, the call to the open weather API has to be after the call to the rest countries API.
   const showCountryDataView = (country) => {
     restCountriesService
       .get(country)
       .then(data => {
-        const relevantCountryData = {
-          name: country,
-          capital: data.capital[0],
-          area: data.area,
-          flag: data.flags.png,
-          languages: Object.values(data.languages)
-        }
-        setCountryDataToDisplay(relevantCountryData)
-        setCountriesToDisplay([])
-        setNotificationMessage(null)
+        openWeatherService 
+          .getCapitalWeather(data.capitalInfo.latlng[0], data.capitalInfo.latlng[1])
+          .then(weatherData => {
+            const relevantCountryData = {
+              name: country,
+              capital: data.capital[0],
+              area: data.area,
+              flag: data.flags.png,
+              languages: Object.values(data.languages),
+              temperature: weatherData.current.temp,
+              temp_icon: `https://openweathermap.org/payload/api/media/file/${weatherData.current.weather[0].icon}.png`,
+              wind_speed: weatherData.current.wind_speed
+            }
+            setCountryDataToDisplay(relevantCountryData)
+            setCountriesToDisplay([])
+            setNotificationMessage(null)
+          })
       })
   }
 
